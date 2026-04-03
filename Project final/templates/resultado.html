@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h1>🎮 Resultado</h1>
+
+<p>🌍 Puntos: {{ puntos }}</p>
+<p>📊 Nivel: {{ nivel }}</p>
+
+<div class="barra">
+    <div class="progreso {{ color }}"></div>
+</div>
+
+<p>💡 Mientras menor sea tu puntaje, mejor para el planeta.</p>
+
+<div class="card">
+    <h2>💡 Recomendaciones</h2>
+
+    {% for r in recomendaciones %}
+        <p>{{ r }}</p>
+    {% endfor %}
+</div>
+
+<a href="/">⬅ Volver</a>
+
+</div>
+
+<script>
+    window.onload = function() {
+        let barra = document.querySelector(".progreso");
+
+        let puntos = Number("{{ puntos }}");
+        let ancho = puntos * 7;
+
+        if (ancho > 100) ancho = 100;
+
+        barra.style.width = ancho + "%";
+    }
+</script>
+
+</body>
+</html>

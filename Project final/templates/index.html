@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Huella de Carbono</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h1>🌍 Huella de Carbono</h1>
+
+<h2>¿Cómo funciona?</h2>
+
+<p>
+Esta aplicación calcula tu impacto ambiental diario según tus hábitos.
+</p>
+
+<ul style="text-align:left;">
+<li>🚗 <b>Transporte:</b> Algunos medios contaminan más que otros.</li>
+<li>⚡ <b>Electricidad:</b> Más uso = mayor consumo de energía.</li>
+<li>🧴 <b>Plástico:</b> Más productos = más residuos contaminantes.</li>
+</ul>
+
+<p>
+💡 Mientras menor sea tu puntaje, menor es tu impacto en el planeta.
+</p>
+
+<p>Calcula tu impacto ambiental diario según tus hábitos.</p>
+
+<form action="/calcular" method="post">
+
+<!-- 🚗 TRANSPORTE -->
+<div class="card">
+    <h2>🚗 Transporte</h2>
+
+    <label>Tipo de transporte:</label>
+    <select name="transporte">
+        <option value="carro">🚗 Carro</option>
+        <option value="bus">🚌 Bus</option>
+        <option value="bici">🚲 Bicicleta</option>
+    </select>
+
+    <label>Horas de uso:</label>
+    <input type="number" name="horas_transporte" placeholder="Ej: 2" required>
+</div>
+
+<!-- ⚡ ELECTRICIDAD -->
+<div class="card">
+    <h2>⚡ Electricidad en casa</h2>
+
+    <p>Más uso eléctrico = más consumo de energía.</p>
+
+    <label>Horas de uso eléctrico:</label>
+    <input type="number" name="energia" placeholder="Ej: 5" required>
+</div>
+
+<!-- 🧴 PLÁSTICO -->
+<div class="card">
+    <h2>🧴 Uso de plástico</h2>
+
+    <p>Cada producto genera residuos contaminantes.</p>
+
+    <label>Productos de plástico al día:</label>
+    <input type="number" name="plastico" placeholder="Ej: 3" required>
+</div>
+
+<button type="submit">🎮 Calcular impacto</button>
+
+</form>
+
+<br>
+<a href="/historial">📊 Ver historial</a>
+
+</div>
+
+</body>
+</html>

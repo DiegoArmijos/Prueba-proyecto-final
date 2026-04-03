@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h1>📊 Historial</h1>
+
+{% if datos %}
+    {% for d in datos %}
+        <div class="card">
+            <p>🌍 {{ d["puntos"] }} puntos</p>
+            <p>{{ d["nivel"] }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No hay datos todavía 😢</p>
+{% endif %}
+
+<a href="/">⬅ Volver</a>
+
+</div>
+
+</body>
+</html>
