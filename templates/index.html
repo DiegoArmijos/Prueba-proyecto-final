@@ -1,78 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Huella de Carbono</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huella de Carbono — EcoTrack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
+<div class="scanlines"></div>
 <div class="container">
+    <header>
+        <div class="logo-badge"><span class="logo-dot"></span>ECO·TRACK</div>
+        <h1>Huella de <span class="neon">Carbono</span></h1>
+        <p class="subtitle">¿Cuánto CO₂ emites hoy?</p>
+        <div class="info-grid">
+            <div class="info-chip">🚗 Transporte</div>
+            <div class="info-chip">⚡ Energía</div>
+            <div class="info-chip">🧴 Plástico</div>
+        </div>
+    </header>
 
-<h1>🌍 Huella de Carbono</h1>
+    <form action="/calcular" method="post" class="form-stack" id="main-form">
 
-<h2>¿Cómo funciona?</h2>
+        <div class="card card-accent-green">
+            <h2>Transporte</h2>
+            <label>Medio de transporte</label>
+            <div class="transport-grid" id="transport-pills">
+                <div class="transport-pill active" data-val="carro"><span class="t-icon">🚗</span><span class="t-label">Carro</span></div>
+                <div class="transport-pill" data-val="moto"><span class="t-icon">🏍️</span><span class="t-label">Moto</span></div>
+                <div class="transport-pill" data-val="bus"><span class="t-icon">🚌</span><span class="t-label">Bus</span></div>
+                <div class="transport-pill" data-val="bici"><span class="t-icon">🚲</span><span class="t-label">Bici</span></div>
+                <div class="transport-pill" data-val="pie"><span class="t-icon">🚶</span><span class="t-label">Pie</span></div>
+            </div>
+            <input type="hidden" name="transporte" id="transporte-val" value="carro">
+            <div class="field-group" style="margin-top:16px;">
+                <label>Horas de uso hoy</label>
+                <input type="range" name="horas_transporte" id="horas-range" min="0" max="12" value="1" step="0.5">
+                <div class="range-labels"><span>0 h</span><span>3 h</span><span>6 h</span><span>9 h</span><span>12 h</span></div>
+                <div class="range-val" id="horas-val">1 hora</div>
+            </div>
+        </div>
 
-<p>
-Esta aplicación calcula tu impacto ambiental diario según tus hábitos.
-</p>
+        <div class="card card-accent-yellow">
+            <h2>Electricidad</h2>
+            <p class="hint">Suma las horas de tus dispositivos: PC, TV, electrodomésticos…</p>
+            <div class="field-group">
+                <label>Horas de consumo eléctrico</label>
+                <input type="range" name="energia" id="energia-range" min="0" max="24" value="4" step="0.5">
+                <div class="range-labels"><span>0 h</span><span>6 h</span><span>12 h</span><span>18 h</span><span>24 h</span></div>
+                <div class="range-val" id="energia-val">4 horas</div>
+            </div>
+        </div>
 
-<ul style="text-align:left;">
-<li>🚗 <b>Transporte:</b> Algunos medios contaminan más que otros.</li>
-<li>⚡ <b>Electricidad:</b> Más uso = mayor consumo de energía.</li>
-<li>🧴 <b>Plástico:</b> Más productos = más residuos contaminantes.</li>
-</ul>
+        <div class="card card-accent-red">
+            <h2>Plástico</h2>
+            <p class="hint">Botellas, empaques, bolsas, vasos, pajillas desechables…</p>
+            <div class="field-group">
+                <label>Unidades plásticas usadas hoy</label>
+                <input type="range" name="plastico" id="plastico-range" min="0" max="20" value="2" step="1">
+                <div class="range-labels"><span>0</span><span>5</span><span>10</span><span>15</span><span>20</span></div>
+                <div class="range-val" id="plastico-val">2 unidades</div>
+            </div>
+        </div>
 
-<p>
-💡 Mientras menor sea tu puntaje, menor es tu impacto en el planeta.
-</p>
+        <button type="submit" class="btn-primary" id="submit-btn">⚡ &nbsp;CALCULAR IMPACTO</button>
+    </form>
 
-<p>Calcula tu impacto ambiental diario según tus hábitos.</p>
-
-<form action="/calcular" method="post">
-
-<!-- 🚗 TRANSPORTE -->
-<div class="card">
-    <h2>🚗 Transporte</h2>
-
-    <label>Tipo de transporte:</label>
-    <select name="transporte">
-        <option value="carro">🚗 Carro</option>
-        <option value="bus">🚌 Bus</option>
-        <option value="bici">🚲 Bicicleta</option>
-    </select>
-
-    <label>Horas de uso:</label>
-    <input type="number" name="horas_transporte" placeholder="Ej: 2" required>
+    <div class="btn-row">
+        <a href="/" class="btn-secondary">⬅ Inicio</a>
+        <a href="/historial" class="btn-secondary">📊 Historial</a>
+    </div>
 </div>
 
-<!-- ⚡ ELECTRICIDAD -->
-<div class="card">
-    <h2>⚡ Electricidad en casa</h2>
-
-    <p>Más uso eléctrico = más consumo de energía.</p>
-
-    <label>Horas de uso eléctrico:</label>
-    <input type="number" name="energia" placeholder="Ej: 5" required>
-</div>
-
-<!-- 🧴 PLÁSTICO -->
-<div class="card">
-    <h2>🧴 Uso de plástico</h2>
-
-    <p>Cada producto genera residuos contaminantes.</p>
-
-    <label>Productos de plástico al día:</label>
-    <input type="number" name="plastico" placeholder="Ej: 3" required>
-</div>
-
-<button type="submit">🎮 Calcular impacto</button>
-
-</form>
-
-<br>
-<a href="/historial">📊 Ver historial</a>
-
-</div>
-
+<script>
+    document.querySelectorAll('.transport-pill').forEach(function(pill){
+        pill.addEventListener('click',function(){
+            document.querySelectorAll('.transport-pill').forEach(function(p){p.classList.remove('active')});
+            pill.classList.add('active');
+            document.getElementById('transporte-val').value=pill.dataset.val;
+        });
+    });
+    function bindRange(rid,lid,sfx){
+        var r=document.getElementById(rid),l=document.getElementById(lid);
+        function u(){var v=parseFloat(r.value);l.textContent=v+' '+(v===1?sfx[0]:sfx[1]);}
+        r.addEventListener('input',u); u();
+    }
+    bindRange('horas-range','horas-val',['hora','horas']);
+    bindRange('energia-range','energia-val',['hora','horas']);
+    bindRange('plastico-range','plastico-val',['unidad','unidades']);
+    document.getElementById('main-form').addEventListener('submit',function(){
+        var btn=document.getElementById('submit-btn');
+        btn.textContent='⏳  Calculando...'; btn.style.opacity='.7'; btn.disabled=true;
+    });
+</script>
 </body>
 </html>

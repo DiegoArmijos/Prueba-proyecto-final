@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado 3R — EcoTrack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="scanlines"></div>
+<div class="container">
+    <header>
+        <div class="logo-badge"><span class="logo-dot"></span>ECO·TRACK</div>
+        <h1>Tu <span class="neon-teal">Puntuación</span></h1>
+    </header>
+
+    <!-- Score hero -->
+    <div class="score-hero hero-{{ color }}">
+        <div class="score-num {{ color }}">{{ puntos }}</div>
+        <div class="score-unit">puntos eco · de 100</div>
+        <div class="nivel-badge nivel-{{ color }}">
+            {{ emoji }} &nbsp;{{ nivel }}
+        </div>
+    </div>
+
+    <!-- Barra -->
+    <div class="card" style="padding:18px 22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Índice eco</span>
+            <span style="font-family:var(--font-h);font-size:.75rem;color:var(--{{ color }});">{{ porcentaje }}%</span>
+        </div>
+        <div class="barra">
+            <div class="progreso {{ color }}" id="barra-progreso"></div>
+        </div>
+        <div class="barra-labels">
+            <span>0</span><span>25</span><span>50</span><span>75</span><span>100 pts</span>
+        </div>
+    </div>
+
+    <!-- CO₂ evitado -->
+    <div class="card">
+        <h2>CO₂ Evitado</h2>
+        <div class="equiv-grid">
+            <div class="equiv-item">
+                <span class="equiv-num" style="color:var(--teal);">{{ co2_evitado }}</span>
+                <span class="equiv-label">kg CO₂ evitados hoy</span>
+            </div>
+            <div class="equiv-item">
+                <span class="equiv-num" style="color:var(--green);">{{ arboles }}</span>
+                <span class="equiv-label">árboles/día para absorber eso</span>
+            </div>
+            <div class="equiv-item">
+                <span class="equiv-num" style="color:var(--cyan);">{{ bolsas }}</span>
+                <span class="equiv-label">bolsas plásticas equivalentes</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalle por categoría -->
+    <div class="card">
+        <h2>Detalle por hábito</h2>
+        <div class="det-grid">
+
+            {% set campos = [
+                ("papel",       "📄", "Papel"),
+                ("plastico_r",  "🧴", "Plástico"),
+                ("vidrio",      "🍶", "Vidrio"),
+                ("metal",       "🥫", "Metal"),
+                ("organico",    "🌿", "Orgánico"),
+                ("reutiliza",   "♻️", "Reutiliza"),
+                ("repara",      "🔧", "Repara"),
+                ("rechazo",     "🙅", "Rechaza"),
+                ("dona",        "👕", "Dona"),
+                ("compra_usad", "🛍️", "2ª mano"),
+            ] %}
+
+            {% for campo, icon, nombre in campos %}
+            {% set item = detalle[campo] %}
+            {% if item.val > 0 or item.pts > 0 %}
+            <div class="det-item">
+                <div class="det-top">
+                    <span class="det-icon">{{ icon }}</span>
+                    <span class="det-name">{{ nombre }}</span>
+                </div>
+                <div class="det-pts">+{{ item.pts }} pts</div>
+                <div class="det-bar" style="margin-top:6px;">
+                    <div class="det-fill" data-w="{{ [item.pts * 2, 100] | min }}"></div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            {% set any_pts = detalle.values() | selectattr('pts', 'gt', 0) | list %}
+            {% if not any_pts %}
+            <div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:20px 0;font-size:.9rem;">
+                😅 Ningún hábito registrado hoy — ¡mañana es un nuevo día!
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Recomendaciones -->
+    <div class="card">
+        <h2>Recomendaciones</h2>
+        {% for icon, title, text in recomendaciones %}
+        <div class="tip">
+            <span class="tip-icon">{{ icon }}</span>
+            <div class="tip-body">
+                <div class="tip-title">{{ title }}</div>
+                <div class="tip-text">{{ text }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="btn-row">
+        <a href="/recicla" class="btn-secondary">⬅ Nueva evaluación</a>
+        <a href="/historial-recicla" class="btn-secondary">📊 Historial</a>
+    </div>
+    <a href="/" class="link-hist" style="margin-top:4px;">🏠 Volver al inicio</a>
+</div>
+
+<script>
+    window.addEventListener('load', function(){
+        setTimeout(function(){
+            document.getElementById('barra-progreso').style.width = '{{ porcentaje }}%';
+        }, 150);
+        document.querySelectorAll('.det-fill').forEach(function(el){
+            setTimeout(function(){ el.style.width = el.dataset.w + '%'; }, 500);
+        });
+    });
+</script>
+</body>
+</html>

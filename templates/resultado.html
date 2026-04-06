@@ -1,47 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado CO₂ — EcoTrack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
+<div class="scanlines"></div>
 <div class="container">
+    <header>
+        <div class="logo-badge"><span class="logo-dot"></span>ECO·TRACK</div>
+        <h1>Tu <span class="neon">Resultado</span></h1>
+    </header>
 
-<h1>🎮 Resultado</h1>
+    <div class="resultado-hero hero-{{ color }}">
+        <div class="co2-number {{ color }}">{{ co2 }}</div>
+        <div class="co2-unit">kg CO₂ · hoy</div>
+        <div class="nivel-badge nivel-{{ color }}">{{ emoji }} &nbsp;NIVEL {{ nivel }}</div>
+    </div>
 
-<p>🌍 Puntos: {{ puntos }}</p>
-<p>📊 Nivel: {{ nivel }}</p>
+    <div class="card" style="padding:18px 22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Impacto total</span>
+            <span style="font-family:var(--font-h);font-size:.75rem;color:var(--{{ color }});">{{ porcentaje }}%</span>
+        </div>
+        <div class="barra"><div class="progreso {{ color }}" id="barra-progreso"></div></div>
+        <div class="barra-labels"><span>0</span><span>5</span><span>10</span><span>15</span><span>20+ kg</span></div>
+    </div>
 
-<div class="barra">
-    <div class="progreso {{ color }}"></div>
-</div>
+    <div class="card">
+        <h2>Desglose</h2>
+        <div class="desglose-grid">
+            <div class="desglose-item">
+                <span class="d-icon">🚗</span>
+                <span class="d-label">Transporte</span>
+                <span class="d-val">{{ co2_t }} <small style="font-size:.65rem;color:var(--muted);">kg</small></span>
+                <div class="mini-barra"><div class="mini-prog" data-w="{{ pct_t }}"></div></div>
+            </div>
+            <div class="desglose-item">
+                <span class="d-icon">⚡</span>
+                <span class="d-label">Electricidad</span>
+                <span class="d-val">{{ co2_e }} <small style="font-size:.65rem;color:var(--muted);">kg</small></span>
+                <div class="mini-barra"><div class="mini-prog" data-w="{{ pct_e }}"></div></div>
+            </div>
+            <div class="desglose-item">
+                <span class="d-icon">🧴</span>
+                <span class="d-label">Plástico</span>
+                <span class="d-val">{{ co2_p }} <small style="font-size:.65rem;color:var(--muted);">kg</small></span>
+                <div class="mini-barra"><div class="mini-prog" data-w="{{ pct_p }}"></div></div>
+            </div>
+        </div>
+    </div>
 
-<p>💡 Mientras menor sea tu puntaje, mejor para el planeta.</p>
+    <div class="card">
+        <h2>¿Qué significa?</h2>
+        <div class="equiv-grid">
+            <div class="equiv-item">
+                <span class="equiv-num">{{ equiv.arboles }}</span>
+                <span class="equiv-label">árboles/día para absorber</span>
+            </div>
+            <div class="equiv-item">
+                <span class="equiv-num">{{ equiv.km_auto }}</span>
+                <span class="equiv-label">km en coche promedio</span>
+            </div>
+            <div class="equiv-item">
+                <span class="equiv-num">{{ equiv.cargas }}</span>
+                <span class="equiv-label">cargas de smartphone</span>
+            </div>
+        </div>
+    </div>
 
-<div class="card">
-    <h2>💡 Recomendaciones</h2>
+    <div class="card">
+        <h2>Recomendaciones</h2>
+        {% for icon, title, text in recomendaciones %}
+        <div class="tip">
+            <span class="tip-icon">{{ icon }}</span>
+            <div class="tip-body">
+                <div class="tip-title">{{ title }}</div>
+                <div class="tip-text">{{ text }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
-    {% for r in recomendaciones %}
-        <p>{{ r }}</p>
-    {% endfor %}
-</div>
-
-<a href="/">⬅ Volver</a>
-
+    <div class="btn-row">
+        <a href="/carbono" class="btn-secondary">⬅ Nueva medición</a>
+        <a href="/historial" class="btn-secondary">📊 Historial</a>
+    </div>
+    <a href="/" class="link-hist" style="margin-top:4px;">🏠 Volver al inicio</a>
 </div>
 
 <script>
-    window.onload = function() {
-        let barra = document.querySelector(".progreso");
-
-        let puntos = Number("{{ puntos }}");
-        let ancho = puntos * 7;
-
-        if (ancho > 100) ancho = 100;
-
-        barra.style.width = ancho + "%";
-    }
+    window.addEventListener('load', function(){
+        setTimeout(function(){ document.getElementById('barra-progreso').style.width='{{ porcentaje }}%'; }, 150);
+        document.querySelectorAll('.mini-prog').forEach(function(el){
+            setTimeout(function(){ el.style.width=el.dataset.w+'%'; }, 400);
+        });
+    });
 </script>
-
 </body>
 </html>

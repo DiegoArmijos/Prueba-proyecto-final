@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack — Tu huella ambiental</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="scanlines"></div>
+
+<div class="container">
+    <header>
+        <div class="logo-badge">
+            <span class="logo-dot"></span>
+            ECO·TRACK
+        </div>
+        <h1>Tu impacto en el <span class="neon">planeta</span></h1>
+        <p class="subtitle">Mide, entiende y mejora tus hábitos ambientales cada día</p>
+    </header>
+
+    <div class="divider">elige un módulo</div>
+
+    <div class="module-grid">
+
+        <!-- Carbono -->
+        <a href="/carbono" class="module-card carbono-card">
+            <div class="module-bg">💨</div>
+            <div class="module-tag green-tag">
+                <span>01</span> · HUELLA DE CARBONO
+            </div>
+            <div class="module-title">¿Cuánto CO₂<br>emites hoy?</div>
+            <div class="module-desc">
+                Calcula tus emisiones diarias según tu transporte, consumo eléctrico
+                y uso de plásticos. Obtén recomendaciones personalizadas.
+            </div>
+            <div class="module-stats">
+                <div class="m-stat">
+                    <span class="m-stat-num">3</span>
+                    <span class="m-stat-label">categorías</span>
+                </div>
+                <div class="m-stat">
+                    <span class="m-stat-num">kg CO₂</span>
+                    <span class="m-stat-label">unidad de medida</span>
+                </div>
+                <div class="m-stat">
+                    <span class="m-stat-num">📊</span>
+                    <span class="m-stat-label">historial</span>
+                </div>
+            </div>
+            <div class="module-arrow" style="margin-top:16px;">
+                CALCULAR HUELLA &nbsp;→
+            </div>
+        </a>
+
+        <!-- Reciclaje -->
+        <a href="/recicla" class="module-card recicla-card">
+            <div class="module-bg">♻️</div>
+            <div class="module-tag teal-tag">
+                <span>02</span> · HÁBITOS 3R
+            </div>
+            <div class="module-title">¿Cuánto reciclas<br>y cuidas el planeta?</div>
+            <div class="module-desc">
+                Evalúa tus hábitos de Reducir, Reutilizar y Reciclar.
+                Descubre cuánto CO₂ evitas y obtén tu puntuación ecológica.
+            </div>
+            <div class="module-stats">
+                <div class="m-stat">
+                    <span class="m-stat-num">10</span>
+                    <span class="m-stat-label">hábitos</span>
+                </div>
+                <div class="m-stat">
+                    <span class="m-stat-num">100</span>
+                    <span class="m-stat-label">puntos máx.</span>
+                </div>
+                <div class="m-stat">
+                    <span class="m-stat-num">📊</span>
+                    <span class="m-stat-label">historial</span>
+                </div>
+            </div>
+            <div class="module-arrow" style="margin-top:16px;">
+                EVALUAR HÁBITOS &nbsp;→
+            </div>
+        </a>
+
+    </div>
+
+    <div class="card" style="margin-top:4px;">
+        <h2>¿Cómo funciona?</h2>
+        <ul class="como-funciona">
+            <li>📋 <span><b>Responde:</b> Preguntas rápidas sobre tu día a día.</span></li>
+            <li>⚡ <span><b>Calcula:</b> Obtenemos tu impacto real en el planeta.</span></li>
+            <li>💡 <span><b>Mejora:</b> Recomendaciones concretas y accionables.</span></li>
+            <li>📈 <span><b>Evoluciona:</b> Haz seguimiento de tu progreso en el tiempo.</span></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

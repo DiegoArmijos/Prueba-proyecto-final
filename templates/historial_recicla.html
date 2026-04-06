@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial CO₂ — EcoTrack</title>
+    <title>Historial 3R — EcoTrack</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -13,36 +13,37 @@
 <div class="container">
     <header>
         <div class="logo-badge"><span class="logo-dot"></span>ECO·TRACK</div>
-        <h1>Historial <span class="neon">CO₂</span></h1>
+        <h1>Historial <span class="neon-teal">3R</span></h1>
     </header>
 
     {% if datos %}
+
     {% if stats %}
     <div class="card">
         <h2>Resumen</h2>
         <div class="stats-grid">
             <div class="stat-item">
-                <span class="stat-num">{{ stats.promedio }}</span>
-                <span class="stat-label">kg CO₂ · promedio</span>
+                <span class="stat-num" style="color:var(--teal);">{{ stats.promedio }}</span>
+                <span class="stat-label">puntos · promedio</span>
             </div>
             <div class="stat-item">
                 <span class="stat-num">{{ stats.registros }}</span>
-                <span class="stat-label">registros</span>
+                <span class="stat-label">evaluaciones</span>
             </div>
             <div class="stat-item">
-                <span class="stat-num" style="color:var(--green);">{{ stats.minimo }}</span>
-                <span class="stat-label">mejor día</span>
+                <span class="stat-num" style="color:var(--green);">{{ stats.maximo }}</span>
+                <span class="stat-label">mejor puntuación</span>
             </div>
             <div class="stat-item">
-                <span class="stat-num" style="color:var(--red);">{{ stats.maximo }}</span>
-                <span class="stat-label">peor día</span>
+                <span class="stat-num" style="color:var(--red);">{{ stats.minimo }}</span>
+                <span class="stat-label">puntuación mínima</span>
             </div>
         </div>
         <div style="text-align:center;margin-top:12px;">
             {% if stats.tendencia == 'mejora' %}
-                <span class="tendencia-badge t-mejora">↓ Emisiones bajando</span>
+                <span class="tendencia-badge t-mejora">↑ Puntuación mejorando</span>
             {% elif stats.tendencia == 'empeora' %}
-                <span class="tendencia-badge t-empeora">↑ Emisiones subiendo</span>
+                <span class="tendencia-badge t-empeora">↓ Puntuación bajando</span>
             {% else %}
                 <span class="tendencia-badge t-igual">→ Sin cambio reciente</span>
             {% endif %}
@@ -51,22 +52,21 @@
     {% endif %}
 
     <div class="card">
-        <h2>Evolución CO₂ — Últimos 7 días</h2>
+        <h2>Evolución — Últimas 7 evaluaciones</h2>
         <div class="grafica" id="grafica"></div>
     </div>
 
     {% for d in datos | reverse %}
-    {% set color_d = "green" if d.nivel == "BAJO" else ("yellow" if d.nivel == "MEDIO" else "red") %}
+    {% set color_d = "green" if d.nivel == "HÉROE" else ("yellow" if d.nivel == "ACTIVO" else "red") %}
     <div class="card historial-card nivel-borde-{{ color_d }}">
         <div class="h-top">
             <span class="h-fecha">{{ d.fecha }}</span>
             <span class="h-nivel nivel-{{ color_d }}">{{ d.nivel }}</span>
         </div>
-        <div class="h-co2">{{ d.co2_total }}<small>kg CO₂</small></div>
+        <div class="h-co2">{{ d.puntos }}<small>pts</small></div>
         <div class="h-chips">
-            <span>🚗 {{ d.co2_transporte }} kg</span>
-            <span>⚡ {{ d.co2_energia }} kg</span>
-            <span>🧴 {{ d.co2_plastico }} kg</span>
+            <span>♻️ {{ d.puntos }} / 100 pts</span>
+            <span>🌿 {{ d.co2_evitado }} kg CO₂ evitado</span>
         </div>
     </div>
     {% endfor %}
@@ -74,16 +74,16 @@
     {% else %}
     <div class="card">
         <div class="empty-state">
-            <span class="empty-icon">🌱</span>
-            <p style="font-size:1.1rem;color:var(--text);margin-bottom:6px;">Sin registros aún</p>
-            <p>¡Calcula tu primera huella y empieza a trackear!</p>
+            <span class="empty-icon">♻️</span>
+            <p style="font-size:1.1rem;color:var(--text);margin-bottom:6px;">Sin evaluaciones aún</p>
+            <p>¡Evalúa tus hábitos y empieza a trackear tu progreso!</p>
         </div>
     </div>
     {% endif %}
 
     <div class="btn-row">
         <a href="/" class="btn-secondary">⬅ Inicio</a>
-        <a href="/carbono" class="btn-secondary">⚡ Nueva medición</a>
+        <a href="/recicla" class="btn-secondary">♻️ Nueva evaluación</a>
     </div>
 </div>
 
@@ -91,17 +91,17 @@
     var datos = {{ datos | tojson }};
     if (datos.length > 0) {
         var ultimos = datos.slice(-7);
-        var valores = ultimos.map(function(d){ return d.co2_total; });
+        var valores = ultimos.map(function(d){ return d.puntos; });
         var maxVal = Math.max.apply(null, valores); if(maxVal===0) maxVal=1;
         var grafica = document.getElementById("grafica");
         var html = "";
         for (var i=0; i<ultimos.length; i++) {
             var d = ultimos[i];
-            var pct = ((d.co2_total/maxVal)*92).toFixed(1);
-            var color = d.co2_total>=12?"red":d.co2_total>=5?"yellow":"green";
+            var pct = ((d.puntos/maxVal)*92).toFixed(1);
+            var color = d.puntos>=60?"green":d.puntos>=30?"yellow":"red";
             var partes = d.fecha.split(" ")[0].split("/");
             var fechaCorta = partes[0]+"/"+partes[1];
-            html += '<div class="g-col"><div class="g-val">'+d.co2_total+'</div>';
+            html += '<div class="g-col"><div class="g-val">'+d.puntos+'</div>';
             html += '<div class="g-bar-wrap"><div class="g-bar '+color+'" data-pct="'+pct+'" style="height:0%"></div></div>';
             html += '<div class="g-label">'+fechaCorta+'</div></div>';
         }
