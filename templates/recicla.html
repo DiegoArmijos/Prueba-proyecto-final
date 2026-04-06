@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hábitos 3R — EcoTrack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="container">
+    <header>
+        <div class="logo-badge"><span class="logo-dot"></span>ECO·TRACK</div>
+        <h1>Hábitos <span class="neon-teal">3R</span></h1>
+        <p class="subtitle">¿Cuánto reciclas, reutilizas y reduces hoy?</p>
+        <div class="info-grid">
+            <div class="info-chip" style="color:var(--teal);border-color:rgba(0,255,204,.2);background:rgba(0,255,204,.05);">♻️ Reciclar</div>
+            <div class="info-chip" style="color:var(--teal);border-color:rgba(0,255,204,.2);background:rgba(0,255,204,.05);">🔄 Reutilizar</div>
+            <div class="info-chip" style="color:var(--teal);border-color:rgba(0,255,204,.2);background:rgba(0,255,204,.05);">📉 Reducir</div>
+        </div>
+    </header>
+
+    <form action="/calcular-recicla" method="post" id="recicla-form" class="form-stack">
+
+        <!-- RECICLAR -->
+        <div class="card card-accent-teal">
+            <h2 style="color:var(--teal);">♻️ Reciclar</h2>
+            <p class="hint">¿Cuántas unidades separaste correctamente hoy para reciclaje?</p>
+            <div class="recycle-grid">
+
+                <div class="recycle-row">
+                    <span class="r-icon">📄</span>
+                    <span class="r-label">Papel y cartón</span>
+                    <span class="r-sub">Hojas, periódicos, cajas</span>
+                    <div class="stepper" data-name="papel">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="papel" value="0">
+                </div>
+
+                <div class="recycle-row">
+                    <span class="r-icon">🧴</span>
+                    <span class="r-label">Plástico</span>
+                    <span class="r-sub">Botellas, envases, tapas</span>
+                    <div class="stepper" data-name="plastico_r">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="plastico_r" value="0">
+                </div>
+
+                <div class="recycle-row">
+                    <span class="r-icon">🍶</span>
+                    <span class="r-label">Vidrio</span>
+                    <span class="r-sub">Botellas, frascos, jarras</span>
+                    <div class="stepper" data-name="vidrio">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="vidrio" value="0">
+                </div>
+
+                <div class="recycle-row">
+                    <span class="r-icon">🥫</span>
+                    <span class="r-label">Metal</span>
+                    <span class="r-sub">Latas, aluminio, tapas</span>
+                    <div class="stepper" data-name="metal">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="metal" value="0">
+                </div>
+
+                <div class="recycle-row">
+                    <span class="r-icon">🌿</span>
+                    <span class="r-label">Orgánicos / Compost</span>
+                    <span class="r-sub">Restos de comida, cáscaras</span>
+                    <div class="stepper" data-name="organico">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="organico" value="0">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- REUTILIZAR -->
+        <div class="card card-accent-green">
+            <h2 style="color:var(--teal);">🔄 Reutilizar</h2>
+            <p class="hint">¿Cuántas veces elegiste reutilizar algo en lugar de usar uno nuevo?</p>
+            <div class="recycle-grid">
+
+                <div class="recycle-row">
+                    <span class="r-icon">♻️</span>
+                    <span class="r-label">Reutilizaste un objeto</span>
+                    <span class="r-sub">Recipiente, bolsa, vaso, tela…</span>
+                    <div class="stepper" data-name="reutiliza">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="reutiliza" value="0">
+                </div>
+
+                <div class="recycle-row">
+                    <span class="r-icon">🔧</span>
+                    <span class="r-label">Reparaste algo</span>
+                    <span class="r-sub">Ropa, aparato, mueble…</span>
+                    <div class="stepper" data-name="repara">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="repara" value="0">
+                </div>
+
+                <div class="recycle-row">
+                    <span class="r-icon">👕</span>
+                    <span class="r-label">Donaste ropa u objetos</span>
+                    <span class="r-sub">Esta semana (prendas o artículos)</span>
+                    <div class="stepper" data-name="dona">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="dona" value="0">
+                </div>
+
+                <div class="recycle-row">
+                    <span class="r-icon">🛍️</span>
+                    <span class="r-label">Compraste de segunda mano</span>
+                    <span class="r-sub">Esta semana (artículos usados)</span>
+                    <div class="stepper" data-name="compra_usad">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="compra_usad" value="0">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- REDUCIR -->
+        <div class="card card-accent-yellow">
+            <h2 style="color:var(--teal);">📉 Reducir</h2>
+            <p class="hint">¿Cuántas veces dijiste NO a un desechable o producto innecesario hoy?</p>
+            <div class="recycle-grid">
+
+                <div class="recycle-row">
+                    <span class="r-icon">🙅</span>
+                    <span class="r-label">Rechazaste un desechable</span>
+                    <span class="r-sub">Pajilla, bolsa, vaso plástico…</span>
+                    <div class="stepper" data-name="rechazo">
+                        <button type="button" class="step-btn step-minus">−</button>
+                        <span class="stepper-val">0</span>
+                        <button type="button" class="step-btn step-plus">+</button>
+                    </div>
+                    <input type="hidden" name="rechazo" value="0">
+                </div>
+
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary teal-btn" id="submit-btn">
+            ♻️ &nbsp;CALCULAR MIS HÁBITOS
+        </button>
+    </form>
+
+    <div class="btn-row">
+        <a href="/" class="btn-secondary">⬅ Inicio</a>
+        <a href="/historial-recicla" class="btn-secondary">📊 Historial</a>
+    </div>
+</div>
+
+<script>
+    // Stepper logic
+    document.querySelectorAll('.stepper').forEach(function(stepper){
+        var name = stepper.dataset.name;
+        var valEl = stepper.querySelector('.stepper-val');
+        var hiddenInput = stepper.closest('.recycle-row').querySelector('input[type=hidden]');
+        var val = 0;
+
+        stepper.querySelector('.step-plus').addEventListener('click', function(){
+            val = Math.min(val + 1, 20);
+            valEl.textContent = val;
+            hiddenInput.value = val;
+            valEl.style.color = val > 0 ? 'var(--teal)' : 'var(--muted)';
+
+            // ✨ animación
+            valEl.style.transform = "scale(1.2)";
+            setTimeout(() => valEl.style.transform = "scale(1)", 150);
+        });
+
+        stepper.querySelector('.step-minus').addEventListener('click', function(){
+            val = Math.max(val - 1, 0);
+            valEl.textContent = val;
+            hiddenInput.value = val;
+            valEl.style.color = val > 0 ? 'var(--teal)' : 'var(--muted)';
+
+            // ✨ animación
+            valEl.style.transform = "scale(1.2)";
+            setTimeout(() => valEl.style.transform = "scale(1)", 150);
+        });
+    });
+
+    document.getElementById('recicla-form').addEventListener('submit', function(){
+        var btn = document.getElementById('submit-btn');
+        btn.textContent = '⏳ Calculando...';
+        btn.style.opacity = '.7';
+        btn.disabled = true;
+    });
+</script>
+</body>
+</html>

@@ -29,7 +29,7 @@ def _leer(path):
     try:
         c = open(path,"r",encoding="utf-8").read().strip()
         return json.loads(c) if c else []
-    except: return []
+    except Exception: return []
 
 def _guardar(path, nuevo):
     datos = _leer(path); datos.append(nuevo)
@@ -90,6 +90,16 @@ def tips_recicla(det, nivel):
     if det["dona"]["val"]==0: t.append(("👕","Dona lo que no usas","Extender la vida útil de prendas reduce la huella textil."))
     return t[:5]
 
+def calcular_rango(puntos):
+    if puntos < 10:
+        return "🌱 Novato ecológico"
+    elif puntos < 25:
+        return "♻️ Consciente"
+    elif puntos < 50:
+        return "🌍 Guardián del planeta"
+    else:
+        return "💚 Eco Master"
+
 # ── Rutas ─────────────────────────────────────────────────────────
 @app.route("/")
 def inicio(): return render_template("inicio.html")
@@ -138,6 +148,10 @@ def calcular_recicla():
 def historial_recicla():
     d=_leer(RECICLA_FILE)
     return render_template("historial_recicla.html",datos=d,stats=estadisticas(d,"puntos"))
+
+@app.route("/wordle")
+def wordle():
+    return render_template("wordle.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

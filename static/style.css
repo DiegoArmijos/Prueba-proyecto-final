@@ -47,9 +47,18 @@ body::before {
 }
 
 .scanlines {
-    pointer-events: none; position: fixed; inset: 0;
-    background: repeating-linear-gradient(to bottom,transparent 0px,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 3px);
-    z-index: 999;
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.06) 2px,
+        rgba(0,0,0,0.06) 3px
+    );
+    z-index: 0;
+    opacity: 0.2;
 }
 
 .container {
@@ -460,3 +469,51 @@ a.link-hist:hover { opacity:1; }
     .stats-grid{grid-template-columns:1fr}
     .det-grid{grid-template-columns:1fr}
 }
+
+.card {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-btn {
+    transition: 0.15s ease;
+}
+
+.step-btn:active {
+    transform: scale(0.9);
+}
+
+.card:hover {
+    box-shadow: 0 10px 25px rgba(0,255,204,0.1);
+}
+
+.stepper-val {
+    display: inline-block;
+    transition: transform 0.15s ease;
+}
+
+.card {
+    margin-top: 30px;
+    padding: 15px;
+    border: 1px solid #00ffcc;
+    display: inline-block;
+    border-radius: 10px;
+}
+
+.wordle-card {
+    border: 1px solid #00ffcc;
+}
+
+.wordle-card .module-bg {
+    opacity: 0.2;
+}
+
+.wordle-card .module-arrow {
+    color: #00c9a7; /* mismo tono teal del 3R */
+    font-weight: 600;
+}
+

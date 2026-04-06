@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Eco Wordle ULTRA</title>
+
+<style>
+body {
+    font-family: 'Rajdhani', Arial;
+    background: radial-gradient(circle at top, #0f1f1c, #070b0a);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    color: #00ffcc;
+    text-shadow: 0 0 10px #00ffcc;
+}
+
+/* MENSAJE EN PANTALLA */
+#msg {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid #00ffcc;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* CARD */
+.card, .game-container {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,255,204,0.3);
+}
+
+/* INPUT */
+input {
+    padding: 10px;
+    font-size: 18px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: none;
+}
+
+/* BOTON */
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    background: #00ffcc;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* BOX */
+.box {
+    display: inline-flex;
+    width: 50px;
+    height: 50px;
+    margin: 4px;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border-radius: 10px;
+    border: 2px solid #00ffcc;
+    background: rgba(255,255,255,0.03);
+}
+
+/* COLORS */
+.green { background: #00c853; }
+.yellow { background: #ffb300; }
+.gray { background: #2c2c2c; }
+
+/* ANIMACIONES */
+@keyframes shake {
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+}
+
+@keyframes flip {
+    50% { transform: rotateX(90deg); }
+}
+
+/* CONFETI */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: 0;
+    animation: fall 2s linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* TECLADO */
+.key {
+    display: inline-block;
+    padding: 10px;
+    margin: 3px;
+    border-radius: 6px;
+    background: #222;
+    border: 1px solid #00ffcc;
+    min-width: 30px;
+}
+
+#msg {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    padding: 20px 40px;
+    border-radius: 15px;
+    border: 2px solid #00ffcc;
+    font-size: 22px;
+    font-weight: bold;
+    z-index: 9999;
+    display: none;
+    transition: opacity 0.3s;
+    box-shadow: 0 0 20px #00ffcc;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="msg"></div>
+
+
+<h1>🌱 Eco Wordle ULTRA</h1>
+
+<div class="card" id="intro">
+    <h2>📘 Cómo jugar</h2>
+    <p>Adivina la palabra ecológica en 6 intentos.</p>
+    <p>🟩 Verde = correcta</p>
+    <p>🟨 Amarillo = existe</p>
+    <p>⬛ Gris = no existe</p>
+    <button onclick="startGame()">Jugar</button>
+</div>
+
+<div class="card">
+    <h3>📊 Estadísticas</h3>
+    <p id="stats"></p>
+</div>
+
+<div class="game-container" id="gameArea" style="display:none;">
+    <div id="game"></div>
+
+    <input id="input">
+    <button onclick="check()">Probar</button>
+    <button onclick="toggleHard()">Modo difícil</button>
+    <button onclick="volverInicio()">⬅ Volver al inicio</button>
+
+    <div id="keyboard"></div>
+</div>
+
+<script>
+
+// PALABRAS
+const palabras = ["RECICLA","PLANETA","BOSQUES","AGUA","PLASTICO","NATURALEZA"];
+
+let palabra;
+let intentos = 0;
+let maxIntentos = 6;
+let ganado = false;
+let hardMode = false;
+
+// STATS
+let stats = JSON.parse(localStorage.getItem("ecoStats")) || { win:0, lose:0 };
+
+function updateStats(){
+    document.getElementById("stats").innerText =
+    `🏆 ${stats.win} | 💀 ${stats.lose}`;
+}
+updateStats();
+
+// MENSAJE
+function showMessage(texto, color="#00ffcc") {
+    let msg = document.getElementById("msg");
+
+    msg.innerText = texto;
+    msg.style.color = color;
+
+    msg.style.display = "block";
+    msg.style.opacity = "1";
+
+    setTimeout(() => {
+        msg.style.opacity = "0";
+    }, 2000);
+}
+
+// NUEVA PALABRA
+function newWord(){
+    palabra = palabras[Math.floor(Math.random()*palabras.length)];
+}
+
+// INICIO
+function startGame(){
+    document.getElementById("intro").style.display="none";
+    document.getElementById("gameArea").style.display="block";
+    resetGame();
+}
+
+// TABLERO
+function crearTablero(){
+    let game = document.getElementById("game");
+    game.innerHTML="";
+
+    for(let i=0;i<maxIntentos;i++){
+        let fila=document.createElement("div");
+
+        for(let j=0;j<palabra.length;j++){
+            let box=document.createElement("div");
+            box.classList.add("box");
+            fila.appendChild(box);
+        }
+
+        game.appendChild(fila);
+    }
+}
+
+// TECLADO
+function crearTeclado(){
+    let kb=document.getElementById("keyboard");
+    kb.innerHTML="";
+    "QWERTYUIOPASDFGHJKLZXCVBNM".split("").forEach(k=>{
+        let key=document.createElement("div");
+        key.classList.add("key");
+        key.innerText=k;
+        key.onclick=()=> input.value+=k;
+        kb.appendChild(key);
+    });
+}
+
+// CONFETI
+function confetti(){
+    for(let i=0;i<60;i++){
+        let c=document.createElement("div");
+        c.classList.add("confetti");
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=["#00ffcc","#ffb300","#00c853"][Math.floor(Math.random()*3)];
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),2000);
+    }
+}
+
+// HARD MODE (ARREGLADO)
+function toggleHard() {
+    hardMode = !hardMode;
+
+    showMessage(
+        hardMode ? "🔥 MODO DIFÍCIL ACTIVADO" : "Modo difícil desactivado",
+        hardMode ? "#ff3a5c" : "#00ffcc"
+    );
+
+    // 🔥 RESET REAL
+    setTimeout(() => {
+        resetGame();
+    }, 300);
+}
+
+// CHECK (ARREGLADO)
+function check(){
+
+    if(ganado) return;
+
+    let inputEl=document.getElementById("input");
+    let input=inputEl.value.toUpperCase();
+
+    if (input.length !== palabra.length) {
+        showMessage("⚠️ Debes usar EXACTAMENTE " + palabra.length + " letras", "#ff3a5c");
+
+        let area = document.getElementById("gameArea");
+        area.style.animation = "shake 0.3s";
+        setTimeout(() => area.style.animation = "", 300);
+
+        return;
+    }
+
+    let fila=document.getElementById("game").children[intentos];
+
+    let palabraArr=[...palabra];
+    let inputArr=[...input];
+    let res=Array(palabra.length).fill("gray");
+
+    let count={};
+    palabraArr.forEach(l=>count[l]=(count[l]||0)+1);
+
+    // verdes
+    for(let i=0;i<palabra.length;i++){
+        if(inputArr[i]===palabraArr[i]){
+            res[i]="green";
+            count[inputArr[i]]--;
+        }
+    }
+
+    // amarillos
+    if(!hardMode){
+        for(let i=0;i<palabra.length;i++){
+            if(res[i]==="green") continue;
+            if(count[inputArr[i]]>0){
+                res[i]="yellow";
+                count[inputArr[i]]--;
+            }
+        }
+    }
+
+    // pintar
+    for(let i=0;i<palabra.length;i++){
+        let box=fila.children[i];
+        box.innerText=inputArr[i];
+        setTimeout(()=>{
+            box.classList.add(res[i]);
+        },i*100);
+    }
+
+    intentos++;
+    inputEl.value="";
+
+    if(input===palabra){
+        ganado=true;
+        stats.win++;
+        localStorage.setItem("ecoStats",JSON.stringify(stats));
+        updateStats();
+        confetti();
+        showMessage("🌱 ¡Ganaste!","#00ff88");
+        setTimeout(resetGame,2000);
+    }
+
+    if(intentos>=maxIntentos && !ganado){
+        stats.lose++;
+        localStorage.setItem("ecoStats",JSON.stringify(stats));
+        updateStats();
+        showMessage("💀 Era: "+palabra,"#ff3a5c");
+        setTimeout(resetGame,2000);
+    }
+}
+
+// RESET
+function resetGame(){
+    intentos=0;
+    ganado=false;
+    newWord();
+    crearTablero();
+    crearTeclado();
+    document.getElementById("input").value="";
+}
+
+function volverInicio() {
+    window.location.href = "/";
+}
+
+// ENTER
+document.addEventListener("keydown",e=>{
+    if(e.key==="Enter") check();
+});
+
+</script>
+
+</body>
+</html>
